@@ -108,7 +108,22 @@ class TikTokPublish(commands.Cog):
     )
     @app_commands.default_permissions(manage_guild=True)
     async def publicar_video(self, interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=True, thinking=True)
+        # Outra instância do bot pode já ter reconhecido esta interação.
+        if interaction.response.is_done():
+            log.warning("Interação /publicar_video já reconhecida antes do callback; execução ignorada.")
+            return
+
+        try:
+            await interaction.response.defer(ephemeral=True, thinking=True)
+        except discord.HTTPException as error:
+            if getattr(error, "code", None) in (40060, 10062):
+                log.warning(
+                    "Interação /publicar_video já reconhecida ou expirada (código %s). "
+                    "Verifique se existe outra instância do bot usando o mesmo token.",
+                    error.code,
+                )
+                return
+            raise
 
         try:
             video = await fetch_latest_video()
