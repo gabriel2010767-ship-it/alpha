@@ -44,6 +44,7 @@ EXTENSIONS = (
     "cogs.arcade_premium",
     "cogs.hierarchy",
     "cogs.voice_chat",
+    "cogs.tiktok_publish",
 )
 
 
