@@ -132,50 +132,42 @@ class TikTokPublish(commands.Cog):
             return
 
         try:
-            await interaction.response.defer(ephemeral=True, thinking=True)
+            # Responde imediatamente com uma mensagem efêmera, em vez de usar defer.
+            # Isso também permite atualizar a resposta original após consultar o TikTok.
+            await interaction.response.send_message(
+                "⏳ Consultando o vídeo mais recente do TikTok...",
+                ephemeral=True,
+            )
         except discord.HTTPException as error:
-            if getattr(error, "code", None) in (40060, 10062):
-                log.warning(
-                    "Discord recusou o defer de /publicar_video | código=%s | status=%s | "
-                    "interaction_id=%s | interaction_app_id=%s | client_app_id=%s | "
-                    "bot_user_id=%s | created_at=%s | now=%s | response_done=%s | erro=%s",
-                    error.code,
-                    error.status,
-                    interaction.id,
-                    interaction.application_id,
-                    self.bot.application_id,
-                    self.bot.user.id if self.bot.user else None,
-                    interaction.created_at.isoformat(),
-                    discord.utils.utcnow().isoformat(),
-                    interaction.response.is_done(),
-                    str(error),
-                )
-                return
-            raise
+            log.error(
+                "Discord recusou a resposta inicial de /publicar_video | código=%s | status=%s | "
+                "interaction_id=%s | interaction_app_id=%s | client_app_id=%s | "
+                "created_at=%s | now=%s | erro=%s",
+                getattr(error, "code", None),
+                getattr(error, "status", None),
+                interaction.id,
+                interaction.application_id,
+                self.bot.application_id,
+                interaction.created_at.isoformat(),
+                discord.utils.utcnow().isoformat(),
+                str(error),
+            )
+            return
 
         try:
             video = await fetch_latest_video()
         except Exception:
             log.exception("Falha ao consultar o perfil do TikTok no comando manual.")
-            await interaction.followup.send(
-                "❌ Não consegui consultar o TikTok agora. Confira os logs do bot e tente novamente mais tarde.",
-                ephemeral=True,
-            )
+            await interaction.edit_original_response(content="❌ Não consegui consultar o TikTok agora. Confira os logs do bot e tente novamente mais tarde.")
             return
 
         if not video:
-            await interaction.followup.send(
-                "⚠️ Não encontrei vídeos públicos nesse perfil.",
-                ephemeral=True,
-            )
+            await interaction.edit_original_response(content="⚠️ Não encontrei vídeos públicos nesse perfil.")
             return
 
         channel = await self.get_announcement_channel()
         if channel is None:
-            await interaction.followup.send(
-                "❌ Não consegui acessar o canal configurado para os anúncios.",
-                ephemeral=True,
-            )
+            await interaction.edit_original_response(content="❌ Não consegui acessar o canal configurado para os anúncios.")
             return
 
         try:
@@ -186,16 +178,10 @@ class TikTokPublish(commands.Cog):
             )
         except discord.HTTPException:
             log.exception("Falha ao publicar o vídeo pelo comando manual.")
-            await interaction.followup.send(
-                "❌ O Discord não aceitou a publicação. Confira as permissões do bot no canal.",
-                ephemeral=True,
-            )
+            await interaction.edit_original_response(content="❌ O Discord não aceitou a publicação. Confira as permissões do bot no canal.")
             return
 
-        await interaction.followup.send(
-            f"✅ Vídeo publicado em {channel.mention}, sem marcar ninguém.",
-            ephemeral=True,
-        )
+        await interaction.edit_original_response(content=f"✅ Vídeo publicado em {channel.mention}, sem marcar ninguém.")
 
     @tasks.loop(minutes=5)
     async def watch_new_videos(self):
