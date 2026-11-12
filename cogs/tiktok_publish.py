@@ -13,6 +13,7 @@ log = logging.getLogger("Rei Dado.TikTok")
 TIKTOK_PROFILE = "https://www.tiktok.com/@gulosinhosgameplays"
 ANNOUNCEMENT_CHANNEL_ID = 1570288138465583164
 PING_ROLE_NAME = "Ping Canal"
+PING_ROLE_ID = 1562301530432868493
 STATE_FILE = Path(__file__).resolve().parent.parent / "tiktok_last_video.json"
 
 
@@ -48,8 +49,28 @@ def _extract_latest_video_sync() -> dict | None:
     return {
         "id": video_id,
         "url": str(url),
-        "title": str(video.get("title") or "Novo vídeo no TikTok")[:250],
+        "thumbnail": str(video.get("thumbnail") or "").strip(),
     }
+
+
+def build_video_embed(video: dict) -> discord.Embed:
+    embed = discord.Embed(
+        title="🎬 VÍDEO NOVO!",
+        description="Acabou de sair um vídeo novo no TikTok de **@gulosinhosgameplays**!",
+        url=video["url"],
+        color=discord.Color.from_rgb(145, 95, 255),
+    )
+    embed.add_field(
+        name="Assista agora",
+        value=f"[Clique aqui para assistir ao vídeo]({video['url']})",
+        inline=False,
+    )
+    embed.set_author(name="TikTok • @gulosinhosgameplays", url=TIKTOK_PROFILE)
+    embed.set_footer(text="Family Alpha • Avisos de vídeos")
+    thumbnail = video.get("thumbnail")
+    if thumbnail and thumbnail.startswith("https://"):
+        embed.set_image(url=thumbnail)
+    return embed
 
 
 async def fetch_latest_video() -> dict | None:
@@ -193,8 +214,7 @@ class TikTokPublish(commands.Cog):
 
         try:
             await channel.send(
-                f"🎬 **Novo vídeo de @gulosinhosgameplays!**\n"
-                f"**{video['title']}**\n{video['url']}",
+                embed=build_video_embed(video),
                 allowed_mentions=discord.AllowedMentions.none(),
             )
         except discord.HTTPException:
@@ -240,15 +260,16 @@ class TikTokPublish(commands.Cog):
                 return
 
             guild = channel.guild
-            role = discord.utils.get(guild.roles, name=PING_ROLE_NAME) if guild else None
+            role = guild.get_role(PING_ROLE_ID) if guild else None
+            if role is None and guild:
+                role = discord.utils.get(guild.roles, name=PING_ROLE_NAME)
             if role is None:
                 log.error("Cargo '%s' não encontrado no servidor; anúncio automático não enviado.", PING_ROLE_NAME)
                 return
 
             await channel.send(
-                f"{role.mention}\n"
-                f"🎬 **Novo vídeo de @gulosinhosgameplays!**\n"
-                f"**{video['title']}**\n{video['url']}",
+                content=role.mention,
+                embed=build_video_embed(video),
                 allowed_mentions=discord.AllowedMentions(
                     roles=[role],
                     users=False,
