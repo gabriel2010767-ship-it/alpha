@@ -56,7 +56,7 @@ def _extract_latest_video_sync() -> dict | None:
 def build_video_embed(video: dict) -> discord.Embed:
     embed = discord.Embed(
         title="🎬 VÍDEO NOVO!",
-        description="Acabou de sair um vídeo novo no TikTok de **@gulosinhosgameplays**!",
+        description="Acabou de sair um vídeo novo no TikTok de [@gulosinhosgameplays](https://www.tiktok.com/@gulosinhosgameplays)!",
         url=video["url"],
         color=discord.Color.from_rgb(145, 95, 255),
     )
