@@ -121,7 +121,7 @@ class TikTokPublish(commands.Cog):
             interaction.application_id,
             self.bot.application_id,
             self.bot.user.id if self.bot.user else None,
-            interaction.command.id if interaction.command else None,
+            (interaction.data or {}).get("id"),
             interaction.guild_id,
             discord.__version__,
         )
