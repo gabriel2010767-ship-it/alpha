@@ -108,6 +108,16 @@ class TikTokPublish(commands.Cog):
     )
     @app_commands.default_permissions(manage_guild=True)
     async def publicar_video(self, interaction: discord.Interaction):
+        # Diagnóstico: mede o atraso entre a criação da interação e o callback.
+        interaction_delay = (discord.utils.utcnow() - interaction.created_at).total_seconds()
+        log.info(
+            "Comando /publicar_video recebido | interaction_id=%s | atraso=%.3fs | bot_latency=%.3fs | response_done=%s",
+            interaction.id,
+            interaction_delay,
+            self.bot.latency if self.bot.latency is not None else -1,
+            interaction.response.is_done(),
+        )
+
         # Outra instância do bot pode já ter reconhecido esta interação.
         if interaction.response.is_done():
             log.warning("Interação /publicar_video já reconhecida antes do callback; execução ignorada.")
