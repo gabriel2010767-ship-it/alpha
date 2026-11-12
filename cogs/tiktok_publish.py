@@ -115,7 +115,8 @@ class TikTokPublish(commands.Cog):
             interaction.guild_id,
         )
         try:
-            await interaction.response.send_message(
+            await interaction.response.defer(ephemeral=True, thinking=True)
+            await interaction.followup.send(
                 "✅ A resposta de interação está funcionando neste módulo.",
                 ephemeral=True,
             )
@@ -155,12 +156,9 @@ class TikTokPublish(commands.Cog):
             return
 
         try:
-            # Responde imediatamente com uma mensagem efêmera, em vez de usar defer.
-            # Isso também permite atualizar a resposta original após consultar o TikTok.
-            await interaction.response.send_message(
-                "⏳ Consultando o vídeo mais recente do TikTok...",
-                ephemeral=True,
-            )
+            # Usa o mesmo reconhecimento inicial já validado pelo /saldo.
+            # O defer confirma a interação imediatamente; o processamento continua em seguida.
+            await interaction.response.defer(ephemeral=True, thinking=True)
         except discord.HTTPException as error:
             log.error(
                 "Discord recusou a resposta inicial de /publicar_video | código=%s | status=%s | "
