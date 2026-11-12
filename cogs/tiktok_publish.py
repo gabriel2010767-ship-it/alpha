@@ -111,11 +111,19 @@ class TikTokPublish(commands.Cog):
         # Diagnóstico: mede o atraso entre a criação da interação e o callback.
         interaction_delay = (discord.utils.utcnow() - interaction.created_at).total_seconds()
         log.info(
-            "Comando /publicar_video recebido | interaction_id=%s | atraso=%.3fs | bot_latency=%.3fs | response_done=%s",
+            "Comando /publicar_video recebido | interaction_id=%s | atraso=%.3fs | bot_latency=%.3fs | "
+            "response_done=%s | interaction_app_id=%s | client_app_id=%s | bot_user_id=%s | "
+            "command_id=%s | guild_id=%s | discord_py=%s",
             interaction.id,
             interaction_delay,
             self.bot.latency if self.bot.latency is not None else -1,
             interaction.response.is_done(),
+            interaction.application_id,
+            self.bot.application_id,
+            self.bot.user.id if self.bot.user else None,
+            interaction.command.id if interaction.command else None,
+            interaction.guild_id,
+            discord.__version__,
         )
 
         # Outra instância do bot pode já ter reconhecido esta interação.
@@ -128,9 +136,19 @@ class TikTokPublish(commands.Cog):
         except discord.HTTPException as error:
             if getattr(error, "code", None) in (40060, 10062):
                 log.warning(
-                    "Interação /publicar_video já reconhecida ou expirada (código %s). "
-                    "Verifique se existe outra instância do bot usando o mesmo token.",
+                    "Discord recusou o defer de /publicar_video | código=%s | status=%s | "
+                    "interaction_id=%s | interaction_app_id=%s | client_app_id=%s | "
+                    "bot_user_id=%s | created_at=%s | now=%s | response_done=%s | erro=%s",
                     error.code,
+                    error.status,
+                    interaction.id,
+                    interaction.application_id,
+                    self.bot.application_id,
+                    self.bot.user.id if self.bot.user else None,
+                    interaction.created_at.isoformat(),
+                    discord.utils.utcnow().isoformat(),
+                    interaction.response.is_done(),
+                    str(error),
                 )
                 return
             raise
