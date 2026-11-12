@@ -102,37 +102,6 @@ class AlphaBot(commands.Bot):
             await self.tree.sync()
             synced = await self.tree.sync(guild=guild)
 
-            # Recria somente o comando /publicar_video no Discord.
-            # Os demais comandos não são apagados nem recriados.
-            publish_command = self.tree.get_command("publicar_video", guild=guild)
-            if publish_command is not None:
-                application_id = self.application_id or (self.user.id if self.user else None)
-                if application_id is None:
-                    logger.warning("Não foi possível recriar /publicar_video: application_id indisponível.")
-                else:
-                    remote_commands = await self.http.get_guild_commands(application_id, guild_id)
-                    remote_publish = next(
-                        (command for command in remote_commands if command.get("name") == "publicar_video"),
-                        None,
-                    )
-                    if remote_publish is not None:
-                        await self.http.delete_guild_command(
-                            application_id,
-                            guild_id,
-                            int(remote_publish["id"]),
-                        )
-                    created_publish = await self.http.create_guild_command(
-                        application_id,
-                        guild_id,
-                        publish_command.to_dict(self.tree),
-                    )
-                    logger.info(
-                        "Comando /publicar_video removido e registrado novamente | command_id=%s",
-                        created_publish.get("id"),
-                    )
-            else:
-                logger.warning("Comando local /publicar_video não encontrado para o registro isolado.")
-
             command_names = sorted(command.name for command in synced)
 
             logger.info("Comandos sincronizados no servidor %s: %s", guild_id, len(synced))
