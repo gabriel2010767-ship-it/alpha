@@ -103,6 +103,29 @@ class TikTokPublish(commands.Cog):
         return channel
 
     @app_commands.command(
+        name="teste_interacao",
+        description="Verifica se o Discord aceita respostas deste módulo.",
+    )
+    @app_commands.default_permissions(manage_guild=True)
+    async def teste_interacao(self, interaction: discord.Interaction):
+        log.info(
+            "Teste de interação recebido | interaction_id=%s | command_id=%s | guild_id=%s",
+            interaction.id,
+            (interaction.data or {}).get("id"),
+            interaction.guild_id,
+        )
+        try:
+            await interaction.response.send_message(
+                "✅ A resposta de interação está funcionando neste módulo.",
+                ephemeral=True,
+            )
+        except discord.HTTPException:
+            log.exception(
+                "Falha ao responder ao /teste_interacao | interaction_id=%s",
+                interaction.id,
+            )
+
+    @app_commands.command(
         name="publicar_video",
         description="Testa a publicação do vídeo mais recente do TikTok, sem marcar ninguém.",
     )
