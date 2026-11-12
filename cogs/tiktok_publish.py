@@ -251,7 +251,16 @@ class TikTokPublish(commands.Cog):
             # Proteção adicional contra repetição após reinício ou perda do arquivo.
             try:
                 async for message in channel.history(limit=100):
-                    if video["id"] in message.content or video["url"] in message.content:
+                    already_announced = (
+                        video["id"] in message.content
+                        or video["url"] in message.content
+                        or any(
+                            video["id"] in (embed.url or "")
+                            or video["url"] == (embed.url or "")
+                            for embed in message.embeds
+                        )
+                    )
+                    if already_announced:
                         save_last_video_id(video["id"])
                         log.info("Vídeo %s já estava no histórico do canal; anúncio duplicado evitado.", video["id"])
                         return
