@@ -260,6 +260,16 @@ async def on_command_error(ctx: commands.Context, error: commands.CommandError):
 
 @bot.tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
+    original_error = getattr(error, "original", error)
+    if isinstance(original_error, discord.HTTPException) and getattr(original_error, "code", None) in (40060, 10062):
+        logger.warning(
+            "Interação do comando %s já foi reconhecida ou expirou (código %s). "
+            "Nenhuma segunda resposta será enviada.",
+            interaction.command.name if interaction.command else "desconhecido",
+            original_error.code,
+        )
+        return
+
     logger.error(
         "Erro em comando slash",
         exc_info=(type(error), error, error.__traceback__),
