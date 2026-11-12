@@ -5,3 +5,4 @@ git+https://github.com/Georg-S/discord-ext-voice-recv.git@18fb4fb280cbcb63ed65c8
 websockets>=14.2
 audioop-lts>=0.2.1
 google-genai>=1.0.0
+yt-dlp>=2025.1.15
