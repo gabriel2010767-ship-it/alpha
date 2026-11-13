@@ -16,6 +16,6 @@ Este projeto foi preparado para iniciar pela Discloud usando `discloud.config`.
 
 ## Importante
 - Nunca compartilhe o arquivo `.env` nem publique o token do bot.
-- O módulo de apostas e os módulos de jogos que continham apostas foram retirados. Os sistemas de economia, comunidade, tickets, moderação, cargos e TikTok permanecem.
+- Todos os sistemas de apostas foram retirados. Permanecem os jogos gratuitos `/jogos`, `/moeda`, `/dado` e `/ppt`, sem moedas ou apostas, além de economia, comunidade, tickets, moderação, cargos e TikTok.
 - O banco SQLite é criado automaticamente em `data/alpha.db`. Confira as regras de armazenamento da sua hospedagem para garantir persistência.
 - Se os comandos não aparecerem imediatamente, aguarde a sincronização e confira os logs.
