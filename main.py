@@ -34,13 +34,11 @@ EXTENSIONS = (
     "cogs.premium",
     "cogs.moderation",
     "cogs.community",
-    "cogs.fun",
     "cogs.levels",
     "cogs.updates",
     "cogs.embed_builder",
     "cogs.expansion",
     "cogs.community_systems",
-    "cogs.arcade_premium",
     "cogs.hierarchy",
     "cogs.voice_chat",
     "cogs.tiktok_publish",
@@ -211,7 +209,6 @@ async def ajuda(interaction: discord.Interaction):
         ("🛡️ Moderação", "`/aviso` `/avisos` `/limpar` `/timeout`\n`/expulsar` `/banir`"),
         ("💬 Comunidade e tickets", "`/sugerir` — enviar sugestão\n`/status_sugestao` — atualizar uma sugestão\n`/ticket` — publicar painel de atendimento\n`/painel_tickets` — publicar painel de tickets\n`/ticket_categoria_editar` — editar categoria\n`/ticket_categoria_adicionar` — criar categoria\n`/ticket_categoria_equipes` — configurar até 5 equipes por categoria\n`/ticket_categoria_remover` — remover categoria\n`/ticket_configurar_avaliacoes` — configurar avaliações\n`/fechar_ticket` — fechar o ticket atual"),
         ("🎨 Cargos e notificações", "`/painel_cores` — painel de cores\n`/painel_pings` — painel de notificações\n`/adicionar_ping` — cadastrar opção de ping\n`/remover_ping` — remover opção de ping\n`/listar_pings` — listar opções cadastradas"),
-        ("🎮 Diversão e níveis", "`/quiz` `/ppt` `/moeda` `/dado` `/slots` `/roleta` `/dados`\n`/mines` `/caraoucoroa` `/bau` `/8ball` `/duelo` `/jogos`\n`/perfil` `/level`\n**Prefixos:** `!jogos` • `Rjogos` • `rjogos`"),
         ("🌟 Comunidade", "`/colecao` `/usar_item` `/clan_convite` `/eventos` `/evento_inscrever` `/missoes` `/missao_semanal`"),
         ("📊 Administração", "`/mod_logs` `/config_antispam` `/estatisticas` `/atividade_servidor` `/resumo_servidor` `/central_admin`"),
         ("🚀 Atualizações", "`/anunciar_atualizacao` — anunciar novidades do bot"),
@@ -236,14 +233,14 @@ async def ajuda_prefixo(ctx: commands.Context):
     painel = discord.ui.Container(accent_colour=discord.Colour.from_rgb(145, 103, 255))
     painel.add_item(discord.ui.TextDisplay(
         "# 🎲 REI DADO • CENTRAL DE AJUDA\n"
-        "Jogos, economia e ferramentas da Family Alpha.\n"
+        "Economia e ferramentas da Family Alpha.\n"
         "**Prefixos:** `!`, `R` e `r`\n"
         "**Exemplos:** `!ajuda`, `!moeda`, `Rjogos`, `rjogos`\n"
         "Os comandos de barra continuam disponíveis."
     ))
     painel.add_item(discord.ui.Separator())
     secoes = [
-        ("🎮 JOGOS E ARCADE", "`!jogos` — lista de jogos\n`!moeda`, `!caraoucoroa`, `!dado`, `!dados`, `!ppt`, `!quiz`, `!slots`, `!roleta`, `!bau`, `!duelo`\nOs jogos são gratuitos e não possuem sistema de apostas.\nArcade: `/blackjack`, `/torre`, `/fortuna`, `/dragao`, `/maioroumenor`, `/mines`, `/8ball` (modo gratuito)."),
+        
         ("💰 ECONOMIA", "`!saldo [@membro]`, `!daily`, `!trabalhar`, `!depositar <valor>`, `!sacar <valor>`, `!transferir @membro <valor>`, `!loja`, `!inventario`.\n`!top [fortuna|nivel|xp]`, `!perfil [@membro]`, `!level [@membro]`.\nTambém disponíveis por `/`: `/saldo`, `/daily`, `/trabalhar`, `/depositar`, `/sacar`, `/transferir`, `/loja`, `/comprar`, `/inventario`."),
         ("👤 PERFIL E SOCIAL", "`/perfil`, `/perfil_alpha`, `/level`, `/top`, `/conquistas`, `/identidade`, `/reputacao`, `/pet`, `/clan`, `/atividade`."),
         ("🛡️ MODERAÇÃO", "`/aviso`, `/avisos`, `/limpar`, `/timeout`, `/expulsar`, `/banir` — exigem permissões."),
