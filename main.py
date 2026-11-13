@@ -29,7 +29,6 @@ logger = logging.getLogger("Rei Dado")
 EXTENSIONS = (
     "cogs.economy",
     "cogs.prefix_commands",
-    "cogs.optional_betting",
     "cogs.ping_roles",
     "cogs.color_roles",
     "cogs.premium",
@@ -103,7 +102,7 @@ class AlphaBot(commands.Bot):
 
             if not guild_ids:
                 logger.error(
-                    "Nenhum servidor configurado. Defina GUILD_ID ou GUILD_IDS no Railway."
+                    "Nenhum servidor configurado. Defina GUILD_ID ou GUILD_IDS na plataforma de hospedagem."
                 )
                 return
 
@@ -133,9 +132,7 @@ class AlphaBot(commands.Bot):
             )
 
             expected_commands = {
-                "ajuda", "apostar_ativar", "apostar_desativar",
-                "apostar_cara_coroa", "apostar_sorte", "apostar_slots",
-                "apostar_historico", "painel_tickets", "ticket",
+                "ajuda", "painel_tickets", "ticket",
                 "ticket_categoria_adicionar", "ticket_categoria_editar",
                 "ticket_categoria_equipes", "ticket_categoria_remover",
                 "ticket_configurar_avaliacoes", "fechar_ticket", "sugerir",
@@ -246,7 +243,7 @@ async def ajuda_prefixo(ctx: commands.Context):
     ))
     painel.add_item(discord.ui.Separator())
     secoes = [
-        ("🎮 JOGOS E ARCADE", "`!jogos` — lista de jogos\n`!moeda`, `!caraoucoroa`, `!dado`, `!dados`, `!ppt`, `!quiz`, `!slots`, `!roleta`, `!bau`, `!duelo`\nOs prefixos de jogo iniciam uma escolha entre modo grátis e aposta quando disponível.\nArcade premium: `/blackjack`, `/torre`, `/fortuna`, `/dragao`, `/maioroumenor`, `/mines`, `/8ball`."),
+        ("🎮 JOGOS E ARCADE", "`!jogos` — lista de jogos\n`!moeda`, `!caraoucoroa`, `!dado`, `!dados`, `!ppt`, `!quiz`, `!slots`, `!roleta`, `!bau`, `!duelo`\nOs jogos são gratuitos e não possuem sistema de apostas.\nArcade: `/blackjack`, `/torre`, `/fortuna`, `/dragao`, `/maioroumenor`, `/mines`, `/8ball` (modo gratuito)."),
         ("💰 ECONOMIA", "`!saldo [@membro]`, `!daily`, `!trabalhar`, `!depositar <valor>`, `!sacar <valor>`, `!transferir @membro <valor>`, `!loja`, `!inventario`.\n`!top [fortuna|nivel|xp]`, `!perfil [@membro]`, `!level [@membro]`.\nTambém disponíveis por `/`: `/saldo`, `/daily`, `/trabalhar`, `/depositar`, `/sacar`, `/transferir`, `/loja`, `/comprar`, `/inventario`."),
         ("👤 PERFIL E SOCIAL", "`/perfil`, `/perfil_alpha`, `/level`, `/top`, `/conquistas`, `/identidade`, `/reputacao`, `/pet`, `/clan`, `/atividade`."),
         ("🛡️ MODERAÇÃO", "`/aviso`, `/avisos`, `/limpar`, `/timeout`, `/expulsar`, `/banir` — exigem permissões."),
@@ -338,7 +335,7 @@ async def on_app_command_error(interaction: discord.Interaction, error: app_comm
 if __name__ == "__main__":
     token = getattr(config, "DISCORD_TOKEN", None)
     if not token:
-        raise SystemExit("ERRO: configure DISCORD_TOKEN nas variáveis do Railway.")
+        raise SystemExit("ERRO: configure DISCORD_TOKEN nas variáveis de ambiente da Discloud.")
     bot.run(token, log_handler=None)
 
-# Commit de gatilho para novo deploy no Railway.
+
