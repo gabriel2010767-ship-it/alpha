@@ -29,6 +29,7 @@ logger = logging.getLogger("Rei Dado")
 EXTENSIONS = (
     "cogs.economy",
     "cogs.prefix_commands",
+    "cogs.games_free",
     "cogs.ping_roles",
     "cogs.color_roles",
     "cogs.premium",
@@ -205,6 +206,7 @@ async def ajuda(interaction: discord.Interaction):
     ))
     painel.add_item(discord.ui.Separator())
     secoes = [
+        ("🎮 Jogos gratuitos", "`/jogos` `/moeda` `/dado` `/ppt` — sem apostas e sem uso de moedas."),
         ("💰 Economia", "`/saldo` `/daily` `/trabalhar` `/depositar`\n`/sacar` `/transferir` `/ranking` `/loja` `/comprar`"),
         ("🛡️ Moderação", "`/aviso` `/avisos` `/limpar` `/timeout`\n`/expulsar` `/banir`"),
         ("💬 Comunidade e tickets", "`/sugerir` — enviar sugestão\n`/status_sugestao` — atualizar uma sugestão\n`/ticket` — publicar painel de atendimento\n`/painel_tickets` — publicar painel de tickets\n`/ticket_categoria_editar` — editar categoria\n`/ticket_categoria_adicionar` — criar categoria\n`/ticket_categoria_equipes` — configurar até 5 equipes por categoria\n`/ticket_categoria_remover` — remover categoria\n`/ticket_configurar_avaliacoes` — configurar avaliações\n`/fechar_ticket` — fechar o ticket atual"),
