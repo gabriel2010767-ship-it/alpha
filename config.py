@@ -5,6 +5,7 @@ load_dotenv()
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN", "").strip()
 GUILD_ID = int(os.getenv("GUILD_ID", "0") or 0)
+GUILD_IDS = os.getenv("GUILD_IDS", "").strip()
 LOG_CHANNEL_ID = int(os.getenv("LOG_CHANNEL_ID", "0") or 0)
 BUG_REPORT_CHANNEL_ID = int(os.getenv("BUG_REPORT_CHANNEL_ID", "0") or 0)
 SUGGESTION_CHANNEL_ID = int(os.getenv("SUGGESTION_CHANNEL_ID", "0") or 0)
