@@ -88,24 +88,49 @@ class AlphaBot(commands.Bot):
             logger.info("Todos os módulos foram carregados.")
 
         try:
-            guild_id = int(getattr(config, "GUILD_ID", 0) or 0)
-            if guild_id <= 0:
+            # Mantém compatibilidade com GUILD_ID e aceita vários IDs em GUILD_IDS.
+            guild_ids = set()
+            primary_guild_id = int(getattr(config, "GUILD_ID", 0) or 0)
+            if primary_guild_id > 0:
+                guild_ids.add(primary_guild_id)
+
+            extra_guild_ids = getattr(config, "GUILD_IDS", "")
+            if isinstance(extra_guild_ids, str):
+                for raw_id in extra_guild_ids.split(","):
+                    raw_id = raw_id.strip()
+                    if raw_id.isdigit() and int(raw_id) > 0:
+                        guild_ids.add(int(raw_id))
+
+            if not guild_ids:
                 logger.error(
-                    "GUILD_ID inválido ou não configurado. "
-                    "Configure o ID do servidor Family Alpha no Railway."
+                    "Nenhum servidor configurado. Defina GUILD_ID ou GUILD_IDS no Railway."
                 )
                 return
 
-            guild = discord.Object(id=guild_id)
-            self.tree.copy_global_to(guild=guild)
+            # Os comandos globais continuam limpos; cada servidor recebe sua cópia.
             self.tree.clear_commands(guild=None)
             await self.tree.sync()
-            synced = await self.tree.sync(guild=guild)
 
-            command_names = sorted(command.name for command in synced)
+            all_synced_names = set()
+            for guild_id in sorted(guild_ids):
+                guild = discord.Object(id=guild_id)
+                self.tree.copy_global_to(guild=guild)
+                synced = await self.tree.sync(guild=guild)
+                command_names = sorted(command.name for command in synced)
+                all_synced_names.update(command_names)
+                logger.info(
+                    "Comandos sincronizados no servidor %s: %s",
+                    guild_id, len(synced),
+                )
+                logger.info(
+                    "Comandos disponíveis no servidor %s: %s",
+                    guild_id, ", ".join(command_names) or "Nenhum",
+                )
 
-            logger.info("Comandos sincronizados no servidor %s: %s", guild_id, len(synced))
-            logger.info("Comandos disponíveis: %s", ", ".join(command_names) or "Nenhum")
+            logger.info(
+                "Sincronização concluída em %s servidor(es): %s",
+                len(guild_ids), ", ".join(str(gid) for gid in sorted(guild_ids)),
+            )
 
             expected_commands = {
                 "ajuda", "apostar_ativar", "apostar_desativar",
@@ -120,7 +145,7 @@ class AlphaBot(commands.Bot):
                 "evento_inscrever", "mod_logs", "config_antispam", "estatisticas",
                 "atividade_servidor", "resumo_servidor", "central_admin", "missoes", "missao_semanal",
             }
-            missing = expected_commands - set(command_names)
+            missing = expected_commands - all_synced_names
             if missing:
                 logger.warning("Comandos esperados ausentes: %s", ", ".join(sorted(missing)))
             else:
